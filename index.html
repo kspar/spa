@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Spa</title>
+</head>
+<body>
+
+
+<h3>Comfy</h3>
+
+<div id="content">
+    <p>Loading...</p>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/page.js/1.8.6/page.min.js"></script>
+<script>
+    var content = $('#content');
+
+    function clear() {
+        content.empty();
+    }
+
+    page('/', function () {
+        clear();
+        content.text("This shit's public.");
+    });
+
+    page('/private/abc', function () {
+        clear();
+        content.text('Here you can see all my abc secrets. ');
+        content.appendChild($('<a>CBA</a>').attr('href', '/private/cba'));
+    });
+
+    page('/private/cba', function () {
+        clear();
+        content.text("Shit's too basic. ");
+        content.appendChild($('<a>ABC</a>').attr('href', '/private/abc'));
+    });
+
+    page.base('/spa');
+    page();
+
+</script>
+</body>
+</html>
