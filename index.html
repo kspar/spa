@@ -31,13 +31,13 @@
     page('/private/abc', function () {
         clear();
         content.text('Here you can see all my abc secrets. ');
-        content.appendChild($('<a>CBA</a>').attr('href', '/private/cba'));
+        content.append($('<a>CBA</a>').attr('href', '/private/cba'));
     });
 
     page('/private/cba', function () {
         clear();
         content.text("Shit's too basic. ");
-        content.appendChild($('<a>ABC</a>').attr('href', '/private/abc'));
+        content.append($('<a>ABC</a>').attr('href', '/private/abc'));
     });
 
     page.base('/spa');
