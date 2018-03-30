@@ -17,6 +17,7 @@
 <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/page.js/1.8.6/page.min.js"></script>
 <script>
+    var ROOT = '/spa';
     var content = $('#content');
 
     function clear() {
@@ -31,13 +32,13 @@
     page('/private/abc', function () {
         clear();
         content.text('Here you can see all my abc secrets. ');
-        content.append($('<a>CBA</a>').attr('href', '/private/cba'));
+        content.append($('<a>CBA</a>').attr('href', ROOT + '/private/cba'));
     });
 
     page('/private/cba', function () {
         clear();
         content.text("Shit's too basic. ");
-        content.append($('<a>ABC</a>').attr('href', '/private/abc'));
+        content.append($('<a>ABC</a>').attr('href', ROOT + '/private/abc'));
     });
 
     page.base('/spa');
