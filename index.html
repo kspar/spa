@@ -46,7 +46,7 @@
                 return resp.json();
             })
             .then(function (json) {
-                console.log('Response: ' + json);
+                console.log('Response: ' + JSON.stringify(json));
                 return json;
             })
             .catch(function (reason) {
