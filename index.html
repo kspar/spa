@@ -29,7 +29,6 @@
 
     function clear() {
         content.empty();
-        content.text('Loading...');
     }
 
     function getCookie(key) {
@@ -44,7 +43,9 @@
 
         return fetch(API_URL + url, {credentials: 'include'})
             .then(function (resp) {
-                var json = resp.json();
+                return resp.json();
+            })
+            .then(function (json) {
                 console.log('Response: ' + json);
                 return json;
             })
