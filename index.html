@@ -74,10 +74,12 @@
     }
 
     function getTime() {
-        return apiCall('/time')
+        var time = apiCall('/time')
             .then(function (value) {
                 return value.toString();
             });
+        console.log(time);
+        return time;
     }
 
     page('/', function () {
