@@ -74,12 +74,10 @@
     }
 
     function getTime() {
-        var time = apiCall('/time')
+        return apiCall('/time')
             .then(function (value) {
                 return value.toString();
             });
-        console.log(time);
-        return time;
     }
 
     page('/', function () {
@@ -91,7 +89,9 @@
         clear();
         checkAuth().then(function () {
             content.append($('<a>CBA</a>').attr('href', APP_ROOT_PATH + '/private/cba'));
-            content.append(getTime());
+            getTime().then(function (time) {
+                content.append(time);
+            })
         });
     });
 
@@ -99,7 +99,9 @@
         clear();
         checkAuth().then(function () {
             content.append($('<a>ABC</a>').attr('href', APP_ROOT_PATH + '/private/abc'));
-            content.append(getTime());
+            getTime().then(function (time) {
+                content.append(time);
+            })
         });
     });
 
