@@ -67,6 +67,7 @@
                 document.cookie = SAVED_REQ_COOKIE_KEY + '=' + currentPath;
                 // redirect to authentication
                 window.location.href = AUTH_URL;
+                return Promise.reject();
             } else {
                 console.log('Authenticated.');
             }
