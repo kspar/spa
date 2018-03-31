@@ -29,6 +29,7 @@
 
     function clear() {
         content.empty();
+        content.text('Loading...');
     }
 
     function getCookie(key) {
@@ -71,6 +72,13 @@
         });
     }
 
+    function getTime() {
+        return apiCall('/time')
+            .then(function (value) {
+                return value
+            });
+    }
+
     page('/', function () {
         clear();
         content.text("This shit's public.");
@@ -79,15 +87,15 @@
     page('/private/abc', function () {
         clear();
         checkAuth();
-        content.text('Here you can see all my abc secrets. ');
         content.append($('<a>CBA</a>').attr('href', APP_ROOT_PATH + '/private/cba'));
+        content.append(getTime());
     });
 
     page('/private/cba', function () {
         clear();
         checkAuth();
-        content.text("Shit's too basic. ");
         content.append($('<a>ABC</a>').attr('href', APP_ROOT_PATH + '/private/abc'));
+        content.append(getTime());
     });
 
     page('/private/auth/success', function () {
