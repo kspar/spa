@@ -58,7 +58,7 @@
 
         var authResponse = apiCall('/sessinfo');
 
-        authResponse.then(function (authResponse) {
+        return authResponse.then(function (authResponse) {
             if (!authResponse.authenticated) {
                 console.log('Unauthenticated, redirecting...');
                 // save current request URL for redirection after authentication
@@ -67,7 +67,7 @@
                 // redirect to authentication
                 window.location.href = AUTH_URL;
             } else {
-                console.log('Authenticated.')
+                console.log('Authenticated.');
             }
         });
     }
@@ -75,7 +75,7 @@
     function getTime() {
         return apiCall('/time')
             .then(function (value) {
-                return value
+                return value;
             });
     }
 
@@ -86,31 +86,34 @@
 
     page('/private/abc', function () {
         clear();
-        checkAuth();
-        content.append($('<a>CBA</a>').attr('href', APP_ROOT_PATH + '/private/cba'));
-        content.append(getTime());
+        checkAuth().then(function () {
+            content.append($('<a>CBA</a>').attr('href', APP_ROOT_PATH + '/private/cba'));
+            content.append(getTime());
+        });
     });
 
     page('/private/cba', function () {
         clear();
-        checkAuth();
-        content.append($('<a>ABC</a>').attr('href', APP_ROOT_PATH + '/private/abc'));
-        content.append(getTime());
+        checkAuth().then(function () {
+            content.append($('<a>ABC</a>').attr('href', APP_ROOT_PATH + '/private/abc'));
+            content.append(getTime());
+        });
     });
 
     page('/private/auth/success', function () {
         clear();
-        checkAuth();
-        var savedReq = getCookie(SAVED_REQ_COOKIE_KEY);
-        // TODO: delete cookie
+        checkAuth().then(function () {
+            var savedReq = getCookie(SAVED_REQ_COOKIE_KEY);
+            // TODO: delete cookie
 
-        if (savedReq) {
-            console.log('Found saved request, redirecting to: ' + savedReq);
-            page(savedReq);
-        } else {
-            console.log('No saved request, redirecting to: ' + APP_HOME_PATH);
-            page(APP_HOME_PATH);
-        }
+            if (savedReq) {
+                console.log('Found saved request, redirecting to: ' + savedReq);
+                page(savedReq);
+            } else {
+                console.log('No saved request, redirecting to: ' + APP_HOME_PATH);
+                page(APP_HOME_PATH);
+            }
+        });
     });
 
 
