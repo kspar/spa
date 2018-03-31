@@ -43,10 +43,8 @@
 
         return fetch(API_URL + url, {credentials: 'include'})
             .then(function (resp) {
-                resp.json();
-            })
-            .then(function (json) {
-                console.log('Response: ' + json);
+                console.log('Response: ' + resp);
+                return resp.json();
             })
             .catch(function (reason) {
                 console.error(reason);
