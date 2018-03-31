@@ -14,14 +14,62 @@
 </div>
 
 
-<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/page.js/1.8.6/page.min.js"></script>
 <script>
-    var ROOT = '/spa';
+    var APP_ROOT_PATH = '/spa';
+    var APP_HOME_PATH = APP_ROOT_PATH + '/private/abc';
+
+    var API_URL = 'http://urgas.ee:8080/spaapi/api';
+    var AUTH_URL = 'http://urgas.ee:8080/spaapi/oauth2/authorization/google'; // can be a completely different auth server URL
+    var SAVED_REQ_COOKIE_KEY = 'URGAS_SPA_SAVED_REQ';
+
     var content = $('#content');
 
     function clear() {
         content.empty();
+    }
+
+    function getCookie(key) {
+        if (!key) {
+            return null;
+        }
+        return document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*" + key.replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1") || null;
+    }
+
+    function apiCall(url) {
+        console.log('Fetching ' + API_URL + url);
+
+        return fetch(API_URL + url, {credentials: 'include'})
+            .then(function (resp) {
+                resp.json();
+            })
+            .then(function (json) {
+                console.log('Response: ' + json);
+            })
+            .catch(function (reason) {
+                console.error(reason);
+            })
+    }
+
+    function checkAuth() {
+        console.log('Checking authentication...');
+
+        var authResponse = apiCall('/sessinfo');
+
+        authResponse.then(function (authResponse) {
+            if (!authResponse.authenticated) {
+                console.log('Unauthenticated, redirecting...');
+                // save current request URL for redirection after authentication
+                var currentPath = window.location.pathname;
+                document.cookie = SAVED_REQ_COOKIE_KEY + '=' + currentPath;
+                // redirect to authentication
+                window.location.href = AUTH_URL;
+            } else {
+                console.log('Authenticated.')
+            }
+        });
     }
 
     page('/', function () {
@@ -31,17 +79,35 @@
 
     page('/private/abc', function () {
         clear();
+        checkAuth();
         content.text('Here you can see all my abc secrets. ');
-        content.append($('<a>CBA</a>').attr('href', ROOT + '/private/cba'));
+        content.append($('<a>CBA</a>').attr('href', APP_ROOT_PATH + '/private/cba'));
     });
 
     page('/private/cba', function () {
         clear();
+        checkAuth();
         content.text("Shit's too basic. ");
-        content.append($('<a>ABC</a>').attr('href', ROOT + '/private/abc'));
+        content.append($('<a>ABC</a>').attr('href', APP_ROOT_PATH + '/private/abc'));
     });
 
-    page.base('/spa');
+    page('/private/auth/success', function () {
+        clear();
+        checkAuth();
+        var savedReq = getCookie(SAVED_REQ_COOKIE_KEY);
+        // TODO: delete cookie
+
+        if (savedReq) {
+            console.log('Found saved request, redirecting to: ' + savedReq);
+            page(savedReq);
+        } else {
+            console.log('No saved request, redirecting to: ' + APP_HOME_PATH);
+            page(APP_HOME_PATH);
+        }
+    });
+
+
+    page.base(APP_ROOT_PATH);
     page();
 
 </script>
